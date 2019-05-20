@@ -5,8 +5,8 @@ import App from '../shared/App';
 const Root = () => {
     return (
         <BrowserRouter>
-        <App/>
-    </BrowserRouter>
+            <App/>
+        </BrowserRouter>
     )
 }
 

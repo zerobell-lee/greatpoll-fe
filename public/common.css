@@ -1,0 +1,60 @@
+.user-header-img-container > img {
+    border-radius: 50%;
+    width: 300px;
+}
+
+.feed-container {
+    margin-bottom: 50px;
+}
+
+.column-2 {
+    display: inline;
+    min-width: 20%;
+}
+
+.column-8 {
+    min-width: 80%;
+    display: inline;
+}
+
+.feed-header {
+    border-bottom-style: solid;
+    border-bottom-color: black;
+    border-bottom-width: 1px;
+}
+
+.profile {
+    border-radius: 50%;
+}
+
+.small-pic {
+    width: 50px;
+}
+
+.big-pic {
+    width: 100px;
+}
+
+.user-name {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.user-name:visited {
+    color: black;
+}
+
+.feed-title {
+    text-align: center;
+    font-size: 10rem;
+}
+
+.feed-title > a {
+    text-decoration: none;
+    color: black;
+}
+
+.feed-title > a:hover {
+    text-decoration: none;
+    color: gray;
+}
