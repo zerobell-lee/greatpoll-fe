@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import MakeQuestion from '../components/MakeQuestion';
+import { withRouter } from 'react-router-dom';
 
 class MakePoll extends Component {
 
@@ -9,61 +11,132 @@ class MakePoll extends Component {
                 title: "",
                 questions: [
                     {
-                        label: "",
+                        questionNo: 1,
+                        questionLabel: "",
+                        shouldSelect: 1,
                         answers: [
-                            {label: ""},
-                            {label: ""},
-                            {label: ""}
+                            {answerNo: 1, answerLabel: ""},
+                            {answerNo: 2, answerLabel: ""},
+                            {answerNo: 3, answerLabel: ""}
                         ]
                     }]
             }}
-        this.handleQnAChange.bind(this)
-        this.handleTitleChange.bind(this)
-        this.submit.bind(this)
+        this.addAnswer.bind(this)
+        this.changeQuestionLabel.bind(this)
+        this.changeAnswerLabel.bind(this)
+        this.addQuestion.bind(this)
     }
 
-    handleQnAChange = e => {
-        const { state } = this;
-        const info = e.target.id.split('-');
+    addAnswer = (questionNo) => {
+        console.log("questionNo : " + questionNo)
+        this.setState(state => {
+            let { data } = state
+            let { questions } = data
+            questions = questions.map(q => {
+                if (q.questionNo === questionNo) {
+                    q.answers = q.answers.concat({answerNo: q.answers.length + 1, answerLabel: ""})
+                }
+                return q
+            })
+            console.log(questions)
+            data = {...data, questions}
+            state = {...state, data}
 
-        if (info.length === 2) {
-            state.questions[parseInt(info[1]) - 1].label = e.target.value
-        }
-        else {
-            state.questions[parseInt(info[1]) - 1].answers[parseInt(info[3]) - 1].label = e.target.value
-        }
-
-        this.setState(state);
+            return state
+        })
     }
 
-    handleTitleChange = e => {
-        this.setState({...this.state, title: e.target.value})
+    changeQuestionLabel = (questionNo, newLabel) => {
+        this.setState(state => {
+            let { data } = state
+            let { questions } = data
+            questions = questions.map(q => {
+                if (q.questionNo === questionNo) {
+                    return {...q, questionLabel: newLabel}
+                }
+                return q
+            })
+            data = {...data, questions}
+            state = {...state, data}
+
+            return state
+        })
     }
 
-    submit = e => {
-        console.log(this.state)
+    changeAnswerLabel = (questionNo, answerNo, newLabel) => {
+        this.setState(state => {
+            let { data } = state
+            let { questions } = data
+            questions = questions.map(q => {
+                if (q.questionNo === questionNo) {
+                    q.answers = q.answers.map(a => {
+                        if (a.answerNo === answerNo) {
+                            return {...a, answerLabel: newLabel}
+                        }
+                        return a
+                    })
+                }
+                return q
+            })
+            data = {...data, questions}
+            state = {...state, data}
+
+            return state
+        })
+    }
+
+    addQuestion = () => {
+        this.setState(state => {
+            let { data } = state
+            let { questions } = data
+            questions = questions.concat({questionNo: questions.length + 1, questionLabel: "New Question", shouldSelect: 1, answers: [{answerNo: 1, answerLabel: ""}]})
+            data = {...data, questions}
+            state = {...state, data}
+
+            return state
+        })
+    }
+
+    changeTitle = (e) => {
+        const value = e.target.value
+        this.setState(state => {
+            state.data.title = value;
+            return state
+        })
+    }
+
+    sendPoll = async () => {
+        const { data } = this.state;
+        await fetch('https://greatpoll-test.herokuapp.com/api/poll', {
+            headers: {'Content-Type': 'application/json'},
+            method: 'post',
+            body: JSON.stringify(data)
+        })
+        this.props.history.push('/')
     }
 
     render() {
         return (
             <div>
-                <form>
-                    <h1>Poll Title</h1>
-                    <input type="test" placeholder="input title here" value={this.state.title} onChange={this.handleTitleChange} />
-                    <h2>Question 1</h2>
-                    <input type="text" id="q-1" placeholder="input your question" value={this.state.questions[0].label} onChange={this.handleQnAChange}/>
-                    <p>Answer 1</p>
-                    <input type="text" id="q-1-a-1" placeholder="input your answer" value={this.state.questions[0].answers[0].label} onChange={this.handleQnAChange}/>
-                    <p>Answer 2</p>
-                    <input type="text" id="q-1-a-2" placeholder="input your answer" value={this.state.questions[0].answers[1].label} onChange={this.handleQnAChange}/>
-                    <p>Answer 3</p>
-                    <input type="text" id="q-1-a-3" placeholder="input your answer" value={this.state.questions[0].answers[2].label} onChange={this.handleQnAChange}/>
-                    <br/>
-                    <input type="button" value="submit" onClick={this.submit} />
-                </form>
+                <h1>Title</h1>
+                <input value={this.state.data.title} onChange={this.changeTitle}/>
+                {this.state.data.questions.map(q => {
+                    return (
+                        <MakeQuestion shouldSelect={q.shouldSelect} questionNo={q.questionNo} questionLabel={q.questionLabel} addAnswer={this.addAnswer} changeQuestionLabel={this.changeQuestionLabel} answers={q.answers} changeAnswerLabel={this.changeAnswerLabel}/>
+                    )
+                })}
+
+                <div onClick={this.addQuestion}>
+                    Add Question
+                </div>
+
+                <div onClick={this.sendPoll}>
+                    Confirm
+                </div>
             </div>
         )
     }
+
 }
 
-export default MakePoll;
+export default withRouter(MakePoll);
