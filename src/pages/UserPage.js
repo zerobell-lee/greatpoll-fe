@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Feed from '../components/Feed';
 import UserHeader from '../components/UserHeader';
+import config from '../global-config';
 
 class UserPage extends Component {
 
@@ -15,16 +16,16 @@ class UserPage extends Component {
 
     render() {
         if (this.state.userInfo) {
-            const { userInfo: { pollList, profile, myInfo } } = this.state
+            const { userInfo: { myPollList, profile, myPage } } = this.state
             return (
                 <div>
-                    <UserHeader displayName={profile.displayName} pictureUrl={profile.pictureUrl} mypage={myInfo} />
-                    {pollList.map(e => {
+                    <UserHeader displayName={profile.displayName} pictureUrl={profile.pictureUrl} mypage={myPage} />
+                    {myPollList.map(e => {
                         return <Feed 
-                                    author={e.userName}
-                                    userId={e.userId}
-                                    profileImg={e.profileImg}
-                                    pollTitle={e.pollTitle}
+                                    author={e.author.displayName}
+                                    userId={e.author.userId}
+                                    profileImg={e.author.pictureUrl}
+                                    pollTitle={e.title}
                                     pollNo={e.pollNo}
                                     datetime={e.datetime}
                                     likes={e.likes}
@@ -43,7 +44,7 @@ class UserPage extends Component {
     }
 
     getUserInfo = async () => {
-        const userInfo = await fetch("https://greatpoll-test.herokuapp.com/api/user/" + this.state.userId)
+        const userInfo = await fetch(config.host + '/api/user/' + this.state.userId)
         .then(res => res.json())
         .catch(err => console.log(err))
         this.setState({userInfo})
@@ -52,7 +53,7 @@ class UserPage extends Component {
     componentDidMount() {
         if (!this.state.userInfo) {
             if (!this.state.userId) {
-                window.location.href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=1571874884&redirect_uri=https%3A%2F%2Fgreatpoll-test.herokuapp.com%2Fauth&state=12345&scope=profile%20openid%20email"
+                window.location.href=config.authServer
             }
             else {
                 this.getUserInfo()

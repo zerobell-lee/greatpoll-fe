@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Input } from 'antd';
 
 class MakeAnswer extends Component {
     constructor(props) {
@@ -15,7 +16,7 @@ class MakeAnswer extends Component {
         return (
             <div>
                 Answer
-                <input type="text" defaultValue={this.props.label} onChange={this.handleChange} />
+                <Input size='larget' type="text" defaultValue={this.props.label} onChange={this.handleChange} />
             </div>
         )
     }

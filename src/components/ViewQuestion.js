@@ -17,7 +17,7 @@ class ViewQuestion extends Component {
         return (
             <div>
                 <h2>
-                    {"Q" + this.props.questionNo + ". " + this.props.questionLabel}
+                    {"Q" + (this.props.questionNo + 1) + ". " + this.props.questionLabel} ({this.props.shouldSelect}개 선택)
                 </h2>
                 {this.state.answers.map(a => {
                     return (

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { Avatar } from 'antd';
+import config from '../global-config';
 
 class UserHeader extends Component {
 
@@ -9,7 +11,7 @@ class UserHeader extends Component {
     }
 
     logout = () => {
-        fetch('https://greatpoll-test.herokuapp.com/api/logout');
+        fetch(config.host + '/api/logout');
         this.props.history.push('/');
     }
 
@@ -17,7 +19,7 @@ class UserHeader extends Component {
         return (
         <div className="user-header-container">
             <div className="user-header-img-container">
-                <img className="profile big-pic" src={this.props.pictureUrl}/>
+                <Avatar src={this.props.pictureUrl}/>
             </div>
             {this.props.displayName}
             {this.props.mypage && <div onClick={this.logout}>Logout</div>}

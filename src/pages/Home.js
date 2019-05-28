@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Feed from '../components/Feed';
+import config from '../global-config';
 
 class Home extends Component {
 
@@ -24,13 +25,13 @@ class Home extends Component {
             this.state.data.map(e => {
                 return (
                     <Feed 
-                                    author={e.userName}
-                                    userId={e.userId}
-                                    profileImg={e.profileImg}
-                                    pollTitle={e.pollTitle}
+                                    author={e.author.displayName}
+                                    userId={e.author.userId}
+                                    profileImg={e.author.pictureUrl}
+                                    pollTitle={e.title}
                                     pollNo={e.pollNo}
-                                    datetime={e.datetime}
-                                    likes={e.likes}
+                                    datetime={e.createdAt}
+                                    likes={e.liked}
                                     voted={e.voted}/>
                 )
             })
@@ -39,7 +40,7 @@ class Home extends Component {
     }
 
     getFeeds = async () => {
-        const feedRes = await fetch('https://greatpoll-test.herokuapp.com/api/main')
+        const feedRes = await fetch(config.host + '/api/main')
         .then(res => res.json())
         .catch(err => console.log(err))
 

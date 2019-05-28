@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Avatar } from 'antd';
 
 const Feed = ({author, userId, profileImg, pollTitle, pollNo, datetime, likes, voted}) => {
     return (
         <div className="feed-container">
             <div className="feed-header">
                 <div className="column-2">
-                    <img className="profile small-pic" src={profileImg} />
+                    <Avatar size='large' src={profileImg} />
                 </div>
                 <div className="column-8">
                     <Link className="user-name" to={"/user/" + userId}>{author}</Link>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Icon } from 'antd';
 
 class ViewAnswer extends Component {
     constructor(props) {
@@ -12,7 +13,7 @@ class ViewAnswer extends Component {
     render() {
         return (
             <div className="no-drag answer" onClick={this.handleClick}>
-                {this.props.checked && "Checked "}
+                {this.props.checked && <Icon type="check" />}
                 {this.props.answerLabel}
             </div>
         )

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import MakeQuestion from '../components/MakeQuestion';
 import { withRouter } from 'react-router-dom';
+import { Input, DatePicker } from 'antd';
+import moment from 'moment';
+import config from '../global-config';
 
 class MakePoll extends Component {
 
@@ -11,15 +14,17 @@ class MakePoll extends Component {
                 title: "",
                 questions: [
                     {
-                        questionNo: 1,
+                        questionNo: 0,
                         questionLabel: "",
                         shouldSelect: 1,
                         answers: [
+                            {answerNo: 0, answerLabel: ""},
                             {answerNo: 1, answerLabel: ""},
-                            {answerNo: 2, answerLabel: ""},
-                            {answerNo: 3, answerLabel: ""}
+                            {answerNo: 2, answerLabel: ""}
                         ]
-                    }]
+                    }],
+                closedAt: new Date(Date.now() + 360000000),
+                description: ''
             }}
         this.addAnswer.bind(this)
         this.changeQuestionLabel.bind(this)
@@ -34,7 +39,7 @@ class MakePoll extends Component {
             let { questions } = data
             questions = questions.map(q => {
                 if (q.questionNo === questionNo) {
-                    q.answers = q.answers.concat({answerNo: q.answers.length + 1, answerLabel: ""})
+                    q.answers = q.answers.concat({answerNo: q.answers.length, answerLabel: ""})
                 }
                 return q
             })
@@ -85,11 +90,28 @@ class MakePoll extends Component {
         })
     }
 
+    changeShouldSelect = (questionNo, newShouldSelect) => {
+        this.setState(state => {
+            let { data } = state
+            let { questions } = data
+            questions = questions.map(q => {
+                if (q.questionNo === questionNo) {
+                    return {...q, shouldSelect: newShouldSelect}
+                }
+                return q
+            })
+            data = {...data, questions}
+            state = {...state, data}
+
+            return state
+        })
+    }
+
     addQuestion = () => {
         this.setState(state => {
             let { data } = state
             let { questions } = data
-            questions = questions.concat({questionNo: questions.length + 1, questionLabel: "New Question", shouldSelect: 1, answers: [{answerNo: 1, answerLabel: ""}]})
+            questions = questions.concat({questionNo: questions.length, questionLabel: "New Question", shouldSelect: 1, answers: [{answerNo: 0, answerLabel: ""}, {answerNo: 1, answerLabel: ""}]})
             data = {...data, questions}
             state = {...state, data}
 
@@ -105,9 +127,17 @@ class MakePoll extends Component {
         })
     }
 
+    changeDescription = (e) => {
+        const value = e.target.value
+        this.setState(state => {
+            state.data.description = value;
+            return state
+        })
+    }
+
     sendPoll = async () => {
         const { data } = this.state;
-        await fetch('https://greatpoll-test.herokuapp.com/api/poll', {
+        await fetch(config.host + '/api/poll', {
             headers: {'Content-Type': 'application/json'},
             method: 'post',
             body: JSON.stringify(data)
@@ -115,14 +145,30 @@ class MakePoll extends Component {
         this.props.history.push('/')
     }
 
+    handleDateTimeChanged = (value) => {
+        this.setState({data: {...this.state.data, closedAt: value.toDate()}})
+    }
+
     render() {
         return (
             <div>
                 <h1>Title</h1>
-                <input value={this.state.data.title} onChange={this.changeTitle}/>
+                <Input size='large' value={this.state.data.title} onChange={this.changeTitle}/>
+                <h2>Closed At</h2>
+                <DatePicker showTime value={moment(this.state.data.closedAt)} onOk={this.handleDateTimeChanged}/>
+                <h2>Description</h2>
+                <Input size='large' value={this.state.data.description} onChange={this.changeDescription} />
                 {this.state.data.questions.map(q => {
                     return (
-                        <MakeQuestion shouldSelect={q.shouldSelect} questionNo={q.questionNo} questionLabel={q.questionLabel} addAnswer={this.addAnswer} changeQuestionLabel={this.changeQuestionLabel} answers={q.answers} changeAnswerLabel={this.changeAnswerLabel}/>
+                        <MakeQuestion 
+                            shouldSelect={q.shouldSelect}
+                            questionNo={q.questionNo}
+                            questionLabel={q.questionLabel}
+                            addAnswer={this.addAnswer}
+                            changeQuestionLabel={this.changeQuestionLabel}
+                            answers={q.answers}
+                            changeAnswerLabel={this.changeAnswerLabel}
+                            changeShouldSelect={this.changeShouldSelect}/>
                     )
                 })}
 
