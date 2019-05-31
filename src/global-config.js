@@ -1,5 +1,5 @@
 const config = {
-    host: 'https://greatpoll-test.herokuapp.com',
+    host: 'http://greatpoll.line',
     clientId: '1571874884',
     authServer: undefined
 }
