@@ -32,7 +32,13 @@ class MakeQuestion extends Component {
                 <Input size='large' defaultValue={this.props.questionLabel} onChange={this.handleChange}/>
                 {this.props.answers.map(e => {
                     return (
-                        <MakeAnswer questionNo={this.props.questionNo} answerNo={e.answerNo} label={e.label} changeAnswerLabel={this.props.changeAnswerLabel}/>
+                        <MakeAnswer 
+                        questionNo={this.props.questionNo} 
+                        answerNo={e.answerNo} 
+                        key={e.answerNo}
+                        label={e.label} 
+                        changeAnswerLabel={this.props.changeAnswerLabel}
+                        deleteAnswer={this.props.deleteAnswer}/>
                     )
                 })}
                 <div onClick={this.addAnswer}>

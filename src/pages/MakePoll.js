@@ -119,6 +119,30 @@ class MakePoll extends Component {
         })
     }
 
+    deleteAnswer = (qNo, aNo) => {
+        console.log('qNo : ' + qNo)
+        let { state } = this
+        let { data } = state
+        let { questions } = data
+        questions = questions.map(q => {
+            if (q.questionNo === qNo) {
+                if (q.answers.length !== 1) {
+                    q.answers.splice(aNo, 1)
+                    q.answers = q.answers.map((a, i) => {
+                        return {...a, answerNo: i}
+                    })
+                    console.log(q.answers)
+                }
+            }
+            return q
+        })
+        data = {...data, questions: questions}
+        state = {...state, data: data}
+        console.log(state)
+
+        this.setState(state)
+    }
+
     changeTitle = (e) => {
         const value = e.target.value
         this.setState(state => {
@@ -161,6 +185,7 @@ class MakePoll extends Component {
                 {this.state.data.questions.map(q => {
                     return (
                         <MakeQuestion 
+                            key={q.questionNo}
                             shouldSelect={q.shouldSelect}
                             questionNo={q.questionNo}
                             questionLabel={q.questionLabel}
@@ -168,7 +193,9 @@ class MakePoll extends Component {
                             changeQuestionLabel={this.changeQuestionLabel}
                             answers={q.answers}
                             changeAnswerLabel={this.changeAnswerLabel}
-                            changeShouldSelect={this.changeShouldSelect}/>
+                            changeShouldSelect={this.changeShouldSelect}
+                            deleteAnswer={this.deleteAnswer}
+                            />
                     )
                 })}
 
