@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Button } from 'antd';
+import { Input, Button, Col, Row } from 'antd';
 
 class MakeAnswer extends Component {
     constructor(props) {
@@ -19,9 +19,18 @@ class MakeAnswer extends Component {
     render() {
         return (
             <div>
-                Answer
-                <Input size='large' type="text" defaultValue={this.props.label} onChange={this.handleChange} />
-                <Button onClick={this.onDelete}>Delete This</Button>
+                <Row>
+                Answer {this.props.answerNo + 1}
+                </Row>
+                <Row type='flex' justify='center'>
+                    <Col span={22}>
+                        <Input size='large' type="text" defaultValue={this.props.label} onChange={this.handleChange} />
+                    </Col>
+                    <Col span={2}>
+                        <Button type='danger' onClick={this.onDelete}>-</Button>
+                    </Col>
+                </Row>
+                
             </div>
         )
     }

@@ -1,0 +1,51 @@
+#poll-title {
+    border: none;
+    outline: none;
+    font-size: 40px;
+    text-align: center;
+    height: 50px;
+    background-color: transparent;
+}
+
+#poll-title::placeholder {
+    color: white;
+    opacity: 1;
+}
+
+#poll-title:focus {
+    border: none;
+    outline: none;
+    font-size: 40px;
+    text-align: center;
+    height: 50px;
+}
+
+#poll-title:active {
+    border: none;
+    outline: none;
+    font-size: 40px;
+    text-align: center;
+    height: 50px;
+}
+
+.question-container {
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.add-question {
+    width: 100%;
+}
+
+.make-poll-header {
+    padding-top: 10%;
+    padding-left: 5%;
+    padding-right: 5%;
+    margin: 0px;
+    background-color: orange;
+}
+
+.make-poll-content {
+    padding-left: 5%;
+    padding-right: 5%;
+}

@@ -8,7 +8,7 @@ import config from '../global-config';
 class ViewPoll extends Component {
     constructor(props) {
         super(props)
-        this.state = { pollNo: props.match.params.pollNo, data: null, viewResult: false }
+        this.state = { pollNo: props.match.params.pollNo, data: null, viewResult: false, loggedIn: false, viewPollMode: 'view'}
         this._callApi.bind(this)
     }
 
@@ -17,16 +17,53 @@ class ViewPoll extends Component {
         .then(res => res.json())
         .catch(err => console.log(err))
 
-        fetchedData.content.questions = fetchedData.content.questions.map(q => {
-            return ({...q, answers: q.answers.map(a => {
-                    return (
-                        {...a, checked : false}
-                    )
-            })})
-        })
+        let existMyVote = false
+        if (fetchedData.myVoteResult) {
+            if (fetchedData.myVoteResult.vote.length) {
+                existMyVote = true
+            }
+        }
+
+        if (existMyVote) {
+            fetchedData.content.questions = fetchedData.content.questions.map((q, i) => {
+                return ({...q, answers: q.answers.map(a => {
+                        if (fetchedData.myVoteResult.vote[i].includes(a.answerNo)) {
+                            return (
+                                {...a, checked: true}
+                            )
+                        }
+                        return (
+                            {...a, checked : false}
+                        )
+                })})
+            })
+        }
+        else {
+            fetchedData.content.questions = fetchedData.content.questions.map((q, i) => {
+                return ({...q, answers: q.answers.map(a => {
+                        return (
+                            {...a, checked : false}
+                        )
+                })})
+            })
+        }
+
+        
 
         console.log(fetchedData)
         this.setState({data: fetchedData})
+    }
+
+    _checkLogin = async() => {
+        const profile = await fetch(config.host + '/api/user')
+        .then(res => res.json())
+        .catch(err => false)
+
+        if (!profile) {
+            return
+        }
+
+        this.setState({loggedIn: true})
     }
 
     handleChangedAnswer = (questionNo, answerNo, newState) => {
@@ -57,13 +94,23 @@ class ViewPoll extends Component {
         method: 'post',
         body: JSON.stringify({pollNo: this.state.pollNo, vote: vote})})
         .then(res => res.json())
-        .catch(err => console.log(err))
+        .catch(err => alert('전송에 실패했다능...'))
         console.log(vote)
+        this.changeViewPollMode()
         this._callApi()
     }
 
     toggleMode = (checked) => {
         this.setState({viewResult: checked})
+    }
+
+    changeViewPollMode = (value) => {
+        if (this.state.viewPollMode === 'view') {
+            this.setState({viewPollMode: 'vote'})
+        }
+        else {
+            this.setState({viewPollMode: 'view'})
+        }
     }
 
     render() {
@@ -72,7 +119,6 @@ class ViewPoll extends Component {
         }
         return (
             <div className="poll-container">
-                rendered.
                 <PollHeader 
                     title={this.state.data.content.title}
                     description={this.state.data.content.description}
@@ -86,14 +132,28 @@ class ViewPoll extends Component {
                 {!this.state.viewResult && <PollContent 
                     questions={this.state.data.content.questions}
                     onAnswerChanged={this.handleChangedAnswer}
+                    loggedIn={this.state.loggedIn}
+                    myResult={this.state.myResult}
+                    mode={this.state.viewPollMode}
+                    changeMode={this.changeViewPollMode}
                 />}
                 {this.state.viewResult && <VoteResult 
                     questions={this.state.data.content.questions}
                     totalResult={this.state.data.totalResult.vote}
                 />}
-                <Button type='primary' onClick={this.submitVote}>
-                    Confirm
-                </Button>
+                {
+                    this.state.viewPollMode==='vote'&&!this.state.viewResult&&
+                        <Button type='primary' onClick={this.submitVote}>
+                            Confirm
+                        </Button>
+                }
+                {
+                    this.state.viewPollMode==='vote'&&
+                    <Button onClick={this.changeViewPollMode}>
+                        Cancel
+                    </Button>
+                }
+                
             </div>
         )
     }
@@ -101,6 +161,7 @@ class ViewPoll extends Component {
     componentDidMount() {
         console.log(this.state)
         this._callApi()
+        this._checkLogin()
     }
 }
 

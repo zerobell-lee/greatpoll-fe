@@ -7,7 +7,10 @@ class ViewAnswer extends Component {
     }
 
     handleClick = (e) => {
-        this.props.onSelected(this.props.answerNo, !this.props.checked)
+        if (this.props.canClick) {
+            this.props.onSelected(this.props.answerNo, !this.props.checked)
+        }
+        
     }
 
     render() {

@@ -14,6 +14,7 @@ class Home extends Component {
     }
 
     render() {
+        const {userId} = this.state
         if (!this.state.data) {
             return (
                 <>
@@ -32,11 +33,28 @@ class Home extends Component {
                                     pollNo={e.pollNo}
                                     datetime={e.createdAt}
                                     likes={e.liked}
-                                    voted={e.voted}/>
+                                    voted={e.voted}
+                                    canDelete={userId === e.author.userId}
+                                    description={e.description}
+                                    onDelete={this.deletePoll}
+                                    />
                 )
             })
         )
         
+    }
+
+    getWhoIAm = async() => {
+        const myInfo = await fetch(config.host + '/api/user')
+            .then(res => res.json())
+            .catch(err => false)
+
+        if (!myInfo) return
+
+        const myId = myInfo.userId
+        console.log(myInfo)
+        this.setState({userId: myId})
+        this.props.onAuthed(myId)
     }
 
     getFeeds = async () => {
@@ -45,17 +63,20 @@ class Home extends Component {
         .catch(err => console.log(err))
 
         const feedList = feedRes.feedList
-        let myId = ""
-        if (feedRes.profile) {
-            myId = feedRes.profile.userId
-        }
 
-        this.setState({data: feedList, userId: myId})
-        this.props.onAuthed(myId)
+        this.setState({data: feedList})
+    }
+
+    deletePoll = async (pollNo) => {
+        await fetch(config.host + '/api/poll/' + pollNo, {
+            method: 'DELETE'
+        }).catch(err => console.log(err))
+        this.getFeeds()
     }
 
     componentDidMount() {
         this.getFeeds();
+        this.getWhoIAm();
     }
 }
 

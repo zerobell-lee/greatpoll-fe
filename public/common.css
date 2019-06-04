@@ -4,7 +4,15 @@
 }
 
 .feed-container {
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 2%;
     margin-bottom: 50px;
+    margin-left: 5%;
+    margin-right: 5%;
+    border-style: solid;
+    border-width: 1px;
+    border-color: gray;
 }
 
 .column-2 {

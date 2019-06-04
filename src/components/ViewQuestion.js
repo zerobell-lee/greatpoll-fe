@@ -21,7 +21,13 @@ class ViewQuestion extends Component {
                 </h2>
                 {this.state.answers.map(a => {
                     return (
-                        <ViewAnswer answerNo={a.answerNo} answerLabel={a.answerLabel} onSelected={this.handleSelected} checked={a.checked}/>
+                        <ViewAnswer 
+                        answerNo={a.answerNo}
+                        answerLabel={a.answerLabel}
+                        onSelected={this.handleSelected}
+                        checked={a.checked}
+                        canClick={this.props.canClick}
+                        />
                     )
                 })}
                 

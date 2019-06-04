@@ -22,7 +22,7 @@ class App extends Component {
         return (
             <div className="App">
                 <Header myId={this.state.myId}/>
-                <div>
+                <div id="App-container">
                     <Route exact path="/" render={() => <Home onAuthed={this.setMyPage}/>}/>
                     <Route exact path="/view/:pollNo" component={ViewPoll}/>
                     <Route exact path="/user/:userId" component={UserPage}/>
