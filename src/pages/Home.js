@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Feed from '../components/Feed';
 import config from '../global-config';
+import FeedBoard from '../components/FeedBoard';
 
 class Home extends Component {
 
@@ -23,25 +24,8 @@ class Home extends Component {
             )
         }
         return (
-            this.state.data.map(e => {
-                return (
-                    <Feed 
-                                    author={e.author.displayName}
-                                    userId={e.author.userId}
-                                    profileImg={e.author.pictureUrl}
-                                    pollTitle={e.title}
-                                    pollNo={e.pollNo}
-                                    datetime={e.createdAt}
-                                    likes={e.liked}
-                                    voted={e.voted}
-                                    canDelete={userId === e.author.userId}
-                                    description={e.description}
-                                    onDelete={this.deletePoll}
-                                    />
-                )
-            })
-        )
-        
+            <FeedBoard feedList={this.state.data} />
+            )
     }
 
     getWhoIAm = async() => {

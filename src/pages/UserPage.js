@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Feed from '../components/Feed';
 import UserHeader from '../components/UserHeader';
 import config from '../global-config';
+import FeedBoard from '../components/FeedBoard';
 
 class UserPage extends Component {
 
@@ -20,17 +21,7 @@ class UserPage extends Component {
             return (
                 <div>
                     <UserHeader displayName={profile.displayName} pictureUrl={profile.pictureUrl} mypage={myPage} />
-                    {myPollList.map(e => {
-                        return <Feed 
-                                    author={e.author.displayName}
-                                    userId={e.author.userId}
-                                    profileImg={e.author.pictureUrl}
-                                    pollTitle={e.title}
-                                    pollNo={e.pollNo}
-                                    datetime={e.datetime}
-                                    likes={e.likes}
-                                    voted={e.voted}/>
-                    })}
+                    <FeedBoard feedList={myPollList} />
                 </div>
             )
         }
