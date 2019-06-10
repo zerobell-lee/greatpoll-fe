@@ -10,12 +10,13 @@ class PollContent extends Component {
 
     render() {
         let canClick = false
-        if (this.props.loggedIn) {
+        if (this.props.loggedIn && this.props.canVote) {
             canClick = true
         }
             return (
                 <div>
-                    {this.props.mode === 'view' && this.props.loggedIn&&<Button onClick={this.props.changeMode}>Vote</Button>}
+                    {this.props.mode === 'view' && this.props.loggedIn&& this.props.canVote && <Button onClick={this.props.changeMode}>Vote</Button>}
+                    {!this.props.canVote && <p>이미 종료된 설문입니다.</p>}
                     {this.props.questions.map(q => {
                             return (
                                 <ViewQuestion questionNo={q.questionNo} 

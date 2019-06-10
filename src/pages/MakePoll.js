@@ -27,13 +27,15 @@ class MakePoll extends Component {
                             {answerNo: 2, answerLabel: "", uuid: uuidv4()}
                         ]
                     }],
-                closedAt: new Date(Date.now() + 360000000),
+                closedAt: new Date(Date.now() + 3600000),
                 description: ''
             }}
         this.addAnswer.bind(this)
         this.changeQuestionLabel.bind(this)
         this.changeAnswerLabel.bind(this)
         this.addQuestion.bind(this)
+
+        console.log(this.state.data.closedAt)
     }
 
     addAnswer = (questionNo) => {
@@ -205,6 +207,8 @@ class MakePoll extends Component {
     }
 
     handleDateTimeChanged = (value) => {
+        console.log(value)
+        console.log(value.toDate())
         this.setState({data: {...this.state.data, closedAt: value.toDate()}})
     }
 
@@ -215,7 +219,7 @@ class MakePoll extends Component {
                 <div className='make-poll-header'>
                     <Input id={'poll-title'} placeholder='Input a title of poll.' value={title} onChange={this.changeTitle}/>
                     <h2>Closed At</h2>
-                    <DatePicker showTime value={moment(closedAt)} onOk={this.handleDateTimeChanged}/>
+                    <DatePicker showTime value={moment(closedAt)} onChange={this.handleDateTimeChanged} onOk={this.handleDateTimeChanged}/>
                     <h2>Description</h2>
                     <TextArea size='large' value={description} onChange={this.changeDescription} />
                 </div>

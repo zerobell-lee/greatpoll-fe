@@ -9,13 +9,12 @@ class Home extends Component {
         super(props)
         this.state = {
             userId: null,
-            data: null
+            data: []
         }
         this.getFeeds.bind(this)
     }
 
     render() {
-        const {userId} = this.state
         if (!this.state.data) {
             return (
                 <>
@@ -42,26 +41,44 @@ class Home extends Component {
     }
 
     getFeeds = async () => {
-        const feedRes = await fetch(config.host + '/api/main')
+        let lastPollNo = 0;
+        const { data } = this.state;
+
+        if (data.length > 0) {
+            lastPollNo = data[data.length - 1].pollNo
+        }
+
+        const feedRes = await fetch(config.host + '/api/main?lastPollNo=' + lastPollNo)
         .then(res => res.json())
         .catch(err => console.log(err))
 
-        const feedList = feedRes.feedList
-
-        this.setState({data: feedList})
+        const feedList = feedRes.feedList.map(e => {
+            if (e.author.userId === this.state.userId) {
+                return {...e, canDelete: true, onDelete: this.deletePoll}
+            }
+            return {...e, canDelete: false, onDelete: this.deletePoll}
+        })
+        this.setState({data: data.concat(feedList)})
     }
 
     deletePoll = async (pollNo) => {
         await fetch(config.host + '/api/poll/' + pollNo, {
             method: 'DELETE'
         }).catch(err => console.log(err))
-        this.getFeeds()
+        const { data } = this.state;
+        this.setState({data: data.filter(e => e.pollNo !== pollNo)})
+    }
+
+    fetchData = async () => {
+        await this.getWhoIAm();
+        this.getFeeds();
     }
 
     componentDidMount() {
-        this.getFeeds();
-        this.getWhoIAm();
+        this.fetchData()
+        this.props.changeInfiniteScrollHandler(true, this.getFeeds)
     }
+
 }
 
 export default Home;

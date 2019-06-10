@@ -8,7 +8,14 @@ import config from '../global-config';
 class ViewPoll extends Component {
     constructor(props) {
         super(props)
-        this.state = { pollNo: props.match.params.pollNo, data: null, viewResult: false, loggedIn: false, viewPollMode: 'view'}
+        this.state = { 
+            pollNo: props.match.params.pollNo,
+            data: null,
+            viewResult: false,
+            loggedIn: false,
+            viewPollMode: 'view',
+            canVote: false
+        }
         this._callApi.bind(this)
     }
 
@@ -48,10 +55,15 @@ class ViewPoll extends Component {
             })
         }
 
+        let canVote = false
+        if (new Date(fetchedData.content.closedAt) > new Date(Date.now())) {
+            canVote = true
+        }
+
         
 
         console.log(fetchedData)
-        this.setState({data: fetchedData})
+        this.setState({data: fetchedData, canVote: canVote})
     }
 
     _checkLogin = async() => {
@@ -136,6 +148,7 @@ class ViewPoll extends Component {
                     myResult={this.state.myResult}
                     mode={this.state.viewPollMode}
                     changeMode={this.changeViewPollMode}
+                    canVote={this.state.canVote}
                 />}
                 {this.state.viewResult && <VoteResult 
                     questions={this.state.data.content.questions}

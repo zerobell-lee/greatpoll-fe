@@ -12,7 +12,10 @@ const FeedBoard = ({feedList}) => {
                                     pollTitle={e.title}
                                     pollNo={e.pollNo}
                                     datetime={e.createdAt}
+                                    description={e.description}
                                     likes={e.liked}
+                                    canDelete={e.canDelete}
+                                    onDelete={e.onDelete}
                                     voted={e.voted}/>
             )
         })

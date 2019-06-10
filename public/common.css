@@ -1,6 +1,7 @@
-.user-header-img-container > img {
-    border-radius: 50%;
-    width: 300px;
+.user-header-img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .feed-container {
@@ -31,16 +32,14 @@
     border-bottom-width: 1px;
 }
 
-.profile {
-    border-radius: 50%;
-}
-
 .small-pic {
     width: 50px;
 }
 
-.big-pic {
-    width: 100px;
+.profile-username {
+    text-align: center;
+    font-weight: bold;
+    font-size: 40px;
 }
 
 .user-name {

@@ -11,7 +11,11 @@ class App extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            myId: null
+            myId: null,
+            infiniteScrollHandler: {
+                enabled: true,
+                fetchFunc: () => { console.log('infinite') }
+            }
         }
         this.setMyPage.bind(this)
     }
@@ -26,14 +30,33 @@ class App extends Component {
                 <SearchBar/>
                 <Header myId={this.state.myId}/>
                 <div id="App-container">
-                    <Route exact path="/" render={() => <Home onAuthed={this.setMyPage}/>}/>
+                    <Route exact path="/" render={() => <Home onAuthed={this.setMyPage} changeInfiniteScrollHandler={this.changeInfiniteScrollHandler}/>}/>
                     <Route exact path="/view/:pollNo" component={ViewPoll}/>
-                    <Route exact path="/user/:userId" component={UserPage}/>
+                    <Route exact path="/user/:userId" render={({match}) => <UserPage match={match} myId={this.state.myId} changeInfiniteScrollHandler={this.changeInfiniteScrollHandler}/>} />
                     <Route exact path="/write" component={MakePoll}/>
-                    <Route exact path="/search/:query" component={SearchResult} />
+                    <Route exact path="/search/:query" render={({match}) => <SearchResult match={match} changeInfiniteScrollHandler={this.changeInfiniteScrollHandler} />} />
                 </div>
             </div>
         )
+    }
+
+    _infiniteScroll = () => {
+        if (this.state.infiniteScrollHandler.enabled === false) return;
+        let scrollHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+        let scrollTop = Math.max(document.documentElement.scrollTop, document.body.scrollTop);
+        let clientHeight = document.documentElement.clientHeight;
+        
+        if (scrollTop + clientHeight === scrollHeight) {
+            this.state.infiniteScrollHandler.fetchFunc()
+        }
+    }
+
+    changeInfiniteScrollHandler = (enabled, fetchFunc) => {
+        this.setState({infiniteScrollHandler: {enabled, fetchFunc}})
+    }
+
+    componentDidMount() {
+        window.addEventListener('scroll', this._infiniteScroll, true)
     }
 }
 
